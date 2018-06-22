@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <title>VUE-测试页</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+
+        .spad {
+            background: #f2b600;
+            color: red;
+        }
+
+        .static {
+            font-size: 30px;
+        }
+
+        .active {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!--v-cloak-->
+    <div id="vmapp" v-cloak>
+        <span>属性：{{message}}</span>
+        <br />
+        <span>计算属性：{{reverseMessage}}</span>
+        <br />
+        <span>方法：{{methodMessage()}}</span>
+        <br />
+        <span>属性get/set：{{fullName}}</span>
+        <br />
+        <span>VUE侦听：<input type="text" v-model="question" /></span><span v-html="answer"></span>
+        <br />
+        <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">
+            测试style1
+        </div>
+        <br />
+        <div v-bind:class="static_style">
+            测试style2
+        </div>
+        <br/>
+        v-show:
+        <h1 v-show="ok">Hello!</h1>
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.2.6/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#vmapp',
+            data: {
+                message: "hello world！",
+                firstName: "张",
+                lastName: "君宝",
+                question: "测试侦听",
+                answer: "侦听答案",
+                isActive: false,
+                hasError: true,
+                ok:true,
+                static_style:
+                {
+                    'static': true,
+                    'active': true,
+                    'text-danger': true
+                }
+            },
+            //初始化完成
+            created: function () {
+                console.log(this.message);
+            },
+            //计算属性
+            computed: {
+                reverseMessage: function () {
+                    return this.message.split('').reverse().join('');
+                },
+                //属性get/set
+                fullName: {
+                    get: function () { return this.firstName + "" + this.lastName; },
+                    set: function (newName) {
+                        var names = newName.split(' ');
+                        this.firstName = names[0];
+                        this.lastName = names[names.length - 1];
+                    }
+                }
+            },
+            //方法
+            methods: {
+                methodMessage: function () {
+                    return this.message.split('').reverse().join('');
+                }
+            },
+            //加载完成
+            mounted: function () {
+                console.log("mounted...");
+                this.fullName = "张 三丰";
+            },
+            //侦听
+            watch: {
+                question: function () {
+                    this.answer = "<b>侦听答案</b>";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
